@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
+import "package:social_bird/router/app_router.dart";
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -10,15 +11,29 @@ class LoginView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Password',
+              ),
+            ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                appRouter.push('/home');
+              },
               child: Text('Zaloguj'),
             ),
+            Text('Nie masz konta?'),
             OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                appRouter.push('/register');
+              },
               child: Text('Zarejestruj'),
             ),
-
           ],
         ),
       ),

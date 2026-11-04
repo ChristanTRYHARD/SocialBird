@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:social_bird/views/login_view.dart';
+import 'package:provider/provider.dart';
+import 'package:social_bird/models/welcome_view_model.dart';
+import 'package:social_bird/router/app_router.dart';
+
 void main() {
   runApp(const SocialBirdApp());
 }
@@ -10,17 +13,20 @@ class SocialBirdApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Social Bird',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.dark,
+    return ChangeNotifierProvider(
+      create: (context) => WelcomeViewModel(),
+      child: MaterialApp.router(
+        routerConfig: appRouter,
+        title: 'Social Bird',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
       ),
-      home: const LoginView(),
     );
   }
 }
