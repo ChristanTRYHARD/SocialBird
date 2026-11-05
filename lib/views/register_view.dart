@@ -1,8 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:social_bird/router/app_router.dart';
 
-class RegisterView extends StatelessWidget {
+import '../services/user_service.dart';
+import '../models/user_model.dart';
+
+class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
+
+  @override
+  State<RegisterView> createState() => _RegisterViewState();
+}
+
+class _RegisterViewState extends State<RegisterView> {
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final userService = UserService();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _register() {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Hasła nie są takie same')));
+      return;
+    }
+
+    final user = UserModel(
+      username: _usernameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (!userService.register(user)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Konto z tym e-mailem już istnieje')),
+      );
+      return;
+    }
+
+    appRouter.go('/home');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,46 +59,46 @@ class RegisterView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('----------------------------------'),
+            const Divider(),
             Text('Social Bird'),
             Text('Utworz konto'),
             TextField(
-            decoration: InputDecoration(
-              labelText: 'Username',
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
-          ),
-                      TextField(
-            decoration: InputDecoration(
-              labelText: 'Email',
-            ),
-          ),
             TextField(
-            decoration: InputDecoration(
-              labelText: 'Password',
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-          ),
-          TextField(
-            decoration: InputDecoration(alignLabelWithHint: true,
-              labelText: 'Confirm Password',
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
-          ),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Confirm Password',
+                alignLabelWithHint: true,
+              ),
+            ),
             ElevatedButton(
-              onPressed: () {
-                appRouter.push('/home');
-              },
-              child: Text('Zarejestruj'),
+              onPressed: _register,
+              child: const Text('Zarejestruj'),
             ),
-            Text('Masz już konto?'),
+            const Text('Masz już konto?'),
             ElevatedButton(
               onPressed: () {
                 appRouter.push('/login');
               },
-              child: Text('Zaloguj'),
+              child: const Text('Zaloguj'),
             ),
-            Text('----------------------------------'),
+            const Divider(),
           ],
         ),
       ),
     );
-  }    
+  }
 }

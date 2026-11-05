@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_bird/models/welcome_view_model.dart';
+import 'package:social_bird/view_modles/welcome_view_model.dart';
 import 'package:social_bird/router/app_router.dart';
 
 void main() {
