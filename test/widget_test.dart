@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:social_bird/views/login_view.dart';
 import 'package:social_bird/views/register_view.dart';
 import 'package:social_bird/views/welcome_view.dart';
 
@@ -13,6 +14,46 @@ void main() {
     expect(find.text('Zaloguj'), findsOneWidget);
     expect(find.text('Zarejestruj'), findsOneWidget);
   });
+
+  testWidgets('login shows field errors for invalid email and password', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: LoginView()));
+
+    await tester.tap(find.text('Zaloguj'));
+    await tester.pump();
+
+    expect(find.text('Podaj adres e-mail'), findsOneWidget);
+    expect(find.text('Hasło musi mieć co najmniej 6 znaków'), findsOneWidget);
+    expect(find.text('Nieprawidłowy e-mail lub hasło'), findsNothing);
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'not-an-email');
+    await tester.enterText(find.byType(TextFormField).at(1), '12345');
+    await tester.tap(find.text('Zaloguj'));
+    await tester.pump();
+
+    expect(find.text('Podaj prawidłowy adres e-mail'), findsOneWidget);
+    expect(find.text('Nieprawidłowy e-mail lub hasło'), findsNothing);
+  });
+
+  testWidgets(
+    'login shows authentication error for valid-looking credentials',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: LoginView()));
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'unknown@example.com',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'valid-pass');
+      await tester.tap(find.text('Zaloguj'));
+      await tester.pump();
+
+      expect(find.text('Podaj prawidłowy adres e-mail'), findsNothing);
+      expect(find.text('Hasło musi mieć co najmniej 6 znaków'), findsNothing);
+      expect(find.text('Nieprawidłowy e-mail lub hasło'), findsOneWidget);
+    },
+  );
 
   testWidgets('registration form validates required fields', (
     WidgetTester tester,

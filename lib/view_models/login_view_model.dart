@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../services/user_service.dart';
+
 class LoginViewModel extends ChangeNotifier {
+  final userService = UserService();
 
   String _username = '';
   String _email = '';
-  final _password = '';
+  String _password = '';
 
   String get username => _username;
   String get email => _email;
@@ -23,5 +26,16 @@ class LoginViewModel extends ChangeNotifier {
   void setEmail(String email) {
     _email = email;
     notifyListeners();
+  }
+
+  void setPassword(String password) {
+    _password = password;
+    notifyListeners();
+  }
+
+  bool login() {
+    final user = userService.login(email, password);
+
+    return user != null;
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../services/user_service.dart';
+import '../models/user_model.dart';
+
 class RegisterViewModel extends ChangeNotifier {
+  final _userService = UserService();
 
   String _username = '';
   String _email = '';
@@ -30,5 +34,19 @@ class RegisterViewModel extends ChangeNotifier {
   void setConfirmPassword(String password) {
     _confirmPassword = password;
     notifyListeners();
+  }
+
+  bool register() {
+    String username = _username.trim();
+    String email = _email.trim();
+    String password = _password;
+
+    final user = UserModel(
+      username: username,
+      email: email,
+      password: password,
+    );
+
+    return _userService.register(user);
   }
 }

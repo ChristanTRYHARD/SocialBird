@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_bird/router/app_router.dart';
 
-import '../services/user_service.dart';
-import '../models/user_model.dart';
+import '../view_models/register_view_model.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -17,11 +16,9 @@ class _RegisterViewState extends State<RegisterView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
+  final vm = RegisterViewModel();
   static final _usernameRegex = RegExp(r'^[a-zA-Z0-9_]{3,20}$');
   static final _emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-
-  final userService = UserService();
 
   @override
   void dispose() {
@@ -30,27 +27,6 @@ class _RegisterViewState extends State<RegisterView> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  void _register() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final user = UserModel(
-      username: _usernameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-    );
-
-    if (!userService.register(user)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Konto z tym e-mailem już istnieje')),
-      );
-      return;
-    }
-
-    appRouter.go('/home');
   }
 
   @override
@@ -124,7 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
                   },
                 ),
                 ElevatedButton(
-                  onPressed: _register,
+                  onPressed: vm.register,
                   child: const Text('Zarejestruj'),
                 ),
                 const Text('Masz już konto?'),
